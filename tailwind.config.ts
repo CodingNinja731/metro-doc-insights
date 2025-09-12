@@ -22,6 +22,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -47,6 +48,25 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // KMRL Brand Colors
+        "accent-teal": {
+          DEFAULT: "hsl(var(--accent-teal))",
+          foreground: "hsl(var(--accent-teal-foreground))",
+          hover: "hsl(var(--accent-teal-hover))",
+        },
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          hover: "hsl(var(--surface-hover))",
+        },
+        // Status Colors
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -57,6 +77,35 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+      },
+      fontSize: {
+        xs: "var(--text-xs)",
+        sm: "var(--text-sm)",
+        base: "var(--text-base)",
+        lg: "var(--text-lg)",
+        xl: "var(--text-xl)",
+        "2xl": "var(--text-2xl)",
+        "3xl": "var(--text-3xl)",
+        "4xl": "var(--text-4xl)",
+      },
+      spacing: {
+        "spacing-1": "var(--spacing-1)",
+        "spacing-2": "var(--spacing-2)",
+        "spacing-3": "var(--spacing-3)",
+        "spacing-4": "var(--spacing-4)",
+        "spacing-5": "var(--spacing-5)",
+        "spacing-6": "var(--spacing-6)",
+        "spacing-7": "var(--spacing-7)",
+        "spacing-8": "var(--spacing-8)",
+      },
+      boxShadow: {
+        "shadow-sm": "var(--shadow-sm)",
+        "shadow-md": "var(--shadow-md)",
+        "shadow-lg": "var(--shadow-lg)",
+        "shadow-xl": "var(--shadow-xl)",
       },
       borderRadius: {
         lg: "var(--radius)",

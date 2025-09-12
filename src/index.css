@@ -2,41 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* IntelliDoc Design System - Corporate Clarity (KMRL)
+Professional document processing platform with bilingual support.
 All colors MUST be HSL.
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Corporate Brand Colors */
+    --background: 210 17% 98%;
+    --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* KMRL Primary Brand */
+    --primary: 210 95% 18%; /* #0A2B4C - Deep Blue */
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 95% 15%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* KMRL Accent */
+    --accent-teal: 174 100% 29%; /* #009688 - Teal */
+    --accent-teal-foreground: 0 0% 100%;
+    --accent-teal-hover: 174 100% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Surface & Background */
+    --surface: 210 17% 97%; /* #F7F9FA - Light Grey */
+    --surface-hover: 210 17% 94%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 17% 95%;
+    --secondary-foreground: 0 0% 20%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --muted: 210 17% 92%;
+    --muted-foreground: 0 0% 45%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --accent: 174 100% 29%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status Colors */
+    --success: 122 39% 49%; /* #2E7D32 */
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 35 100% 50%; /* #F57C00 */
+    --warning-foreground: 0 0% 100%;
+    
+    --destructive: 4 90% 58%; /* #D32F2F */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 17% 87%;
+    --input: 210 17% 87%;
+    --ring: 210 95% 18%;
 
     --radius: 0.5rem;
+
+    /* Spacing Tokens - 8pt Grid */
+    --spacing-1: 0.5rem;   /* 8px */
+    --spacing-2: 1rem;     /* 16px */
+    --spacing-3: 1.5rem;   /* 24px */
+    --spacing-4: 2rem;     /* 32px */
+    --spacing-5: 2.5rem;   /* 40px */
+    --spacing-6: 3rem;     /* 48px */
+    --spacing-7: 4rem;     /* 64px */
+    --spacing-8: 5rem;     /* 80px */
+
+    /* Shadows & Elevation */
+    --shadow-sm: 0 1px 2px 0 hsl(210 95% 18% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(210 95% 18% / 0.1), 0 2px 4px -1px hsl(210 95% 18% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(210 95% 18% / 0.1), 0 4px 6px -2px hsl(210 95% 18% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(210 95% 18% / 0.1), 0 10px 10px -5px hsl(210 95% 18% / 0.04);
+
+    /* Typography Scale */
+    --text-xs: 0.75rem;     /* 12px */
+    --text-sm: 0.875rem;    /* 14px */
+    --text-base: 1rem;      /* 16px */
+    --text-lg: 1.125rem;    /* 18px */
+    --text-xl: 1.25rem;     /* 20px */
+    --text-2xl: 1.5rem;     /* 24px */
+    --text-3xl: 1.875rem;   /* 30px */
+    --text-4xl: 2.25rem;    /* 36px */
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +148,91 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
   }
+
+  /* Typography Classes */
+  .text-heading-1 { @apply text-4xl font-bold leading-tight; }
+  .text-heading-2 { @apply text-3xl font-semibold leading-tight; }
+  .text-heading-3 { @apply text-2xl font-semibold leading-snug; }
+  .text-heading-4 { @apply text-xl font-semibold leading-snug; }
+  .text-body { @apply text-base leading-relaxed; }
+  .text-caption { @apply text-sm text-muted-foreground; }
+}
+
+@layer components {
+  /* Custom Button Variants */
+  .btn-kmrl-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-md;
+  }
+  
+  .btn-kmrl-accent {
+    @apply bg-accent-teal text-accent-teal-foreground hover:bg-accent-teal/90;
+  }
+
+  /* Card Variants */
+  .card-elevated {
+    @apply bg-card border border-border shadow-lg rounded-lg;
+  }
+  
+  .card-surface {
+    @apply bg-surface border border-border rounded-lg;
+  }
+
+  /* Status Indicators */
+  .status-success { @apply bg-success text-success-foreground; }
+  .status-warning { @apply bg-warning text-warning-foreground; }
+  .status-error { @apply bg-destructive text-destructive-foreground; }
+
+  /* Document Processing States */
+  .processing-pending { @apply bg-warning/20 border-warning text-warning-foreground; }
+  .processing-complete { @apply bg-success/20 border-success text-success-foreground; }
+  .processing-error { @apply bg-destructive/20 border-destructive text-destructive-foreground; }
+}
+
+@layer utilities {
+  /* Spacing Utilities */
+  .spacing-1 { @apply p-2; }     /* 8px */
+  .spacing-2 { @apply p-4; }     /* 16px */
+  .spacing-3 { @apply p-6; }     /* 24px */
+  .spacing-4 { @apply p-8; }     /* 32px */
+  
+  /* Animation Classes */
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  .scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  /* Document Upload Zone */
+  .upload-zone {
+    @apply border-2 border-dashed border-border bg-surface hover:bg-surface-hover 
+           transition-colors rounded-lg p-8 text-center cursor-pointer;
+  }
+  
+  .upload-zone.dragover {
+    @apply border-accent-teal bg-accent-teal/5;
+  }
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
