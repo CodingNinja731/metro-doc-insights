@@ -88,9 +88,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
     
     if (error) {
+      let title = "Login Failed"
+      let description = error.message
+      
+      // Handle specific error cases with better messaging
+      if (error.message.includes("Email not confirmed")) {
+        title = "Email Not Confirmed"
+        description = "Please check your email and click the confirmation link before signing in. Check your spam folder if you don't see it."
+      }
+      
       toast({
-        title: "Login Failed",
-        description: error.message,
+        title,
+        description,
         variant: "destructive",
       })
     } else {
