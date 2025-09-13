@@ -14,6 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          details: Json | null
+          document_id: string | null
+          id: string
+          ip_address: string | null
+          timestamp: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          details?: Json | null
+          document_id?: string | null
+          id?: string
+          ip_address?: string | null
+          timestamp?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          details?: Json | null
+          document_id?: string | null
+          id?: string
+          ip_address?: string | null
+          timestamp?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          action_items: string[] | null
+          classification: Json | null
+          created_at: string
+          department: string | null
+          extracted_text: string | null
+          file_size: number | null
+          file_type: string | null
+          filename: string
+          id: string
+          processed_at: string | null
+          status: string
+          storage_path: string
+          summary: string | null
+          tags: string[] | null
+          updated_at: string
+          uploaded_by: string | null
+          urgency: string | null
+        }
+        Insert: {
+          action_items?: string[] | null
+          classification?: Json | null
+          created_at?: string
+          department?: string | null
+          extracted_text?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          filename: string
+          id?: string
+          processed_at?: string | null
+          status?: string
+          storage_path: string
+          summary?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          uploaded_by?: string | null
+          urgency?: string | null
+        }
+        Update: {
+          action_items?: string[] | null
+          classification?: Json | null
+          created_at?: string
+          department?: string | null
+          extracted_text?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          filename?: string
+          id?: string
+          processed_at?: string | null
+          status?: string
+          storage_path?: string
+          summary?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          uploaded_by?: string | null
+          urgency?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -44,12 +145,56 @@ export type Database = {
         }
         Relationships: []
       }
+      rules: {
+        Row: {
+          action_json: Json
+          condition_json: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          action_json: Json
+          condition_json: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          action_json?: Json
+          condition_json?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_audit_event: {
+        Args: {
+          p_action: string
+          p_details?: Json
+          p_document_id?: string
+          p_user_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
