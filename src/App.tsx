@@ -16,6 +16,7 @@ import Upload from "./pages/Upload";
 import Documents from "./pages/Documents";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import DocumentInspector from "./components/DocumentInspector";
 
 const queryClient = new QueryClient();
 
@@ -95,7 +96,7 @@ const App = () => (
                     <div className="min-h-screen flex w-full">
                       <AppSidebar />
                       <main className="flex-1 overflow-auto">
-                        <Documents />
+                        <DocumentInspector />
                       </main>
                     </div>
                   </SidebarProvider>

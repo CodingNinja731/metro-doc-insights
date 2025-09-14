@@ -94,17 +94,26 @@ const Upload = () => {
         p_details: { filename: file.name, file_size: file.size }
       });
 
-      // Simulate processing completion (in real app this would be handled by an Edge Function)
-      setTimeout(() => {
+      // Trigger document processing
+      setTimeout(async () => {
+        try {
+          const { error: processError } = await supabase.functions.invoke('process-document');
+          if (processError) {
+            console.error('Processing trigger error:', processError);
+          }
+        } catch (error) {
+          console.error('Failed to trigger processing:', error);
+        }
+        
         setUploadedFiles(prev => prev.map(f => 
           f.id === fileId ? { ...f, status: 'completed' } : f
         ));
         
         toast({
           title: "Upload Complete",
-          description: `${file.name} has been uploaded successfully`,
+          description: `${file.name} has been uploaded and queued for processing`,
         });
-      }, 2000);
+      }, 1000);
 
     } catch (error: any) {
       console.error('Upload error:', error);

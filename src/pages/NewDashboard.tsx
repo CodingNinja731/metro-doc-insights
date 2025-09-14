@@ -51,6 +51,31 @@ const Dashboard = () => {
   const [recentDocuments, setRecentDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Realtime subscription for document updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('document-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'documents'
+        },
+        (payload) => {
+          console.log('Document update:', payload);
+          fetchDashboardData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       fetchDashboardData();
