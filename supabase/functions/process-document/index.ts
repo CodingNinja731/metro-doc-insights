@@ -18,6 +18,9 @@ interface DocumentRow {
   storage_path: string;
   status: string;
   uploaded_by: string;
+  attempts?: number;
+  processing_error?: string;
+  last_error_at?: string;
 }
 
 interface AIResponse {
@@ -145,10 +148,13 @@ async function processDocument(document: DocumentRow): Promise<void> {
   console.log(`Processing document ${document.id}: ${document.filename}`);
   
   try {
-    // Update status to processing
+    // Increment attempts and update status to processing
     await supabase
       .from('documents')
-      .update({ status: 'processing' })
+      .update({ 
+        status: 'processing',
+        attempts: document.attempts ? document.attempts + 1 : 1 
+      })
       .eq('id', document.id);
 
     // Log audit event
@@ -156,7 +162,7 @@ async function processDocument(document: DocumentRow): Promise<void> {
       p_user_id: document.uploaded_by,
       p_action: 'document_processing_started',
       p_document_id: document.id,
-      p_details: { filename: document.filename }
+      p_details: { filename: document.filename, attempt: document.attempts + 1 }
     });
 
     // Download file from storage
@@ -186,7 +192,9 @@ async function processDocument(document: DocumentRow): Promise<void> {
         classification: aiResults.classification,
         department: aiResults.classification.department,
         urgency: aiResults.classification.urgency,
-        processed_at: new Date().toISOString()
+        processed_at: new Date().toISOString(),
+        processing_error: null,
+        last_error_at: null
       })
       .eq('id', document.id);
 
@@ -202,7 +210,8 @@ async function processDocument(document: DocumentRow): Promise<void> {
       p_details: { 
         summary_length: aiResults.summary.length,
         action_items_count: aiResults.actionItems.length,
-        classification: aiResults.classification
+        classification: aiResults.classification,
+        attempts: document.attempts + 1
       }
     });
 
@@ -211,22 +220,41 @@ async function processDocument(document: DocumentRow): Promise<void> {
   } catch (error) {
     console.error(`Error processing document ${document.id}:`, error);
     
-    // Update status to failed
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const currentAttempts = document.attempts ? document.attempts + 1 : 1;
+    const maxRetries = 3;
+    
+    // Update status based on retry attempts
+    const newStatus = currentAttempts >= maxRetries ? 'failed' : 'queued';
+    
     await supabase
       .from('documents')
       .update({ 
-        status: 'failed',
-        processed_at: new Date().toISOString()
+        status: newStatus,
+        processing_error: errorMessage,
+        last_error_at: new Date().toISOString(),
+        processed_at: newStatus === 'failed' ? new Date().toISOString() : null
       })
       .eq('id', document.id);
 
     // Log error
     await supabase.rpc('log_audit_event', {
       p_user_id: document.uploaded_by,
-      p_action: 'document_processing_failed',
+      p_action: newStatus === 'failed' ? 'document_processing_failed_permanently' : 'document_processing_retry_scheduled',
       p_document_id: document.id,
-      p_details: { error: error.message }
+      p_details: { 
+        error: errorMessage, 
+        attempts: currentAttempts,
+        max_retries: maxRetries,
+        will_retry: newStatus === 'queued'
+      }
     });
+
+    if (newStatus === 'failed') {
+      console.log(`Document ${document.id} failed permanently after ${currentAttempts} attempts`);
+    } else {
+      console.log(`Document ${document.id} will be retried (attempt ${currentAttempts}/${maxRetries})`);
+    }
   }
 }
 
@@ -241,7 +269,7 @@ serve(async (req) => {
     // Fetch all queued documents
     const { data: queuedDocs, error: fetchError } = await supabase
       .from('documents')
-      .select('id, filename, storage_path, status, uploaded_by')
+      .select('id, filename, storage_path, status, uploaded_by, attempts, processing_error, last_error_at')
       .eq('status', 'queued')
       .order('created_at', { ascending: true })
       .limit(10);

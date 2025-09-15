@@ -95,25 +95,46 @@ const Upload = () => {
       });
 
       // Trigger document processing
-      setTimeout(async () => {
-        try {
-          const { error: processError } = await supabase.functions.invoke('process-document');
-          if (processError) {
-            console.error('Processing trigger error:', processError);
-          }
-        } catch (error) {
-          console.error('Failed to trigger processing:', error);
+      try {
+        const { error: processError } = await supabase.functions.invoke('process-document');
+        if (processError) {
+          console.error('Processing trigger error:', processError);
         }
-        
-        setUploadedFiles(prev => prev.map(f => 
-          f.id === fileId ? { ...f, status: 'completed' } : f
-        ));
-        
-        toast({
-          title: "Upload Complete",
-          description: `${file.name} has been uploaded and queued for processing`,
-        });
-      }, 1000);
+      } catch (error) {
+        console.error('Failed to trigger processing:', error);
+      }
+      
+      toast({
+        title: "Upload Complete",
+        description: `${file.name} has been uploaded and queued for processing`,
+      });
+
+      // Set up real-time listener for this document
+      const documentChannel = supabase
+        .channel(`document-${documentData.id}`)
+        .on('postgres_changes', 
+          { event: 'UPDATE', schema: 'public', table: 'documents', filter: `id=eq.${documentData.id}` },
+          (payload) => {
+            const updatedDoc = payload.new as any;
+            setUploadedFiles(prev => prev.map(f => 
+              f.documentId === updatedDoc.id 
+                ? { 
+                    ...f, 
+                    status: updatedDoc.status === 'completed' ? 'completed' : 
+                           updatedDoc.status === 'failed' ? 'error' : 
+                           updatedDoc.status === 'processing' ? 'processing' : f.status,
+                    error: updatedDoc.processing_error || undefined
+                  } 
+                : f
+            ));
+          }
+        )
+        .subscribe();
+
+      // Clean up listener after 5 minutes
+      setTimeout(() => {
+        supabase.removeChannel(documentChannel);
+      }, 5 * 60 * 1000);
 
     } catch (error: any) {
       console.error('Upload error:', error);

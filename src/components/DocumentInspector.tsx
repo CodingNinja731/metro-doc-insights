@@ -154,10 +154,15 @@ const DocumentInspector = () => {
     try {
       setReprocessing(true);
       
-      // Update document status to queued
+      // Update document status to queued and reset error fields
       const { error: updateError } = await supabase
         .from('documents')
-        .update({ status: 'queued' })
+        .update({ 
+          status: 'queued',
+          processing_error: null,
+          last_error_at: null,
+          attempts: 0
+        })
         .eq('id', documentData.id);
 
       if (updateError) throw updateError;

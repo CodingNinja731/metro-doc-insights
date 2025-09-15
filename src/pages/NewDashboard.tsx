@@ -90,11 +90,23 @@ const Dashboard = () => {
             schema: 'public',
             table: 'documents'
           },
-          () => {
+          (payload) => {
+            console.log('Real-time document update:', payload);
             fetchDashboardData();
           }
         )
         .subscribe();
+
+      // Trigger processing of queued documents on mount
+      const triggerProcessing = async () => {
+        try {
+          await supabase.functions.invoke('process-document');
+        } catch (error) {
+          console.error('Failed to trigger processing:', error);
+        }
+      };
+      
+      triggerProcessing();
 
       return () => {
         supabase.removeChannel(channel);
