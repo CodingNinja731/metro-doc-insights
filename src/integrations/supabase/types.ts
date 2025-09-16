@@ -58,6 +58,7 @@ export type Database = {
       documents: {
         Row: {
           action_items: string[] | null
+          attempts: number | null
           classification: Json | null
           created_at: string
           department: string | null
@@ -66,7 +67,9 @@ export type Database = {
           file_type: string | null
           filename: string
           id: string
+          last_error_at: string | null
           processed_at: string | null
+          processing_error: string | null
           status: string
           storage_path: string
           summary: string | null
@@ -77,6 +80,7 @@ export type Database = {
         }
         Insert: {
           action_items?: string[] | null
+          attempts?: number | null
           classification?: Json | null
           created_at?: string
           department?: string | null
@@ -85,7 +89,9 @@ export type Database = {
           file_type?: string | null
           filename: string
           id?: string
+          last_error_at?: string | null
           processed_at?: string | null
+          processing_error?: string | null
           status?: string
           storage_path: string
           summary?: string | null
@@ -96,6 +102,7 @@ export type Database = {
         }
         Update: {
           action_items?: string[] | null
+          attempts?: number | null
           classification?: Json | null
           created_at?: string
           department?: string | null
@@ -104,7 +111,9 @@ export type Database = {
           file_type?: string | null
           filename?: string
           id?: string
+          last_error_at?: string | null
           processed_at?: string | null
+          processing_error?: string | null
           status?: string
           storage_path?: string
           summary?: string | null
