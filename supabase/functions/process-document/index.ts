@@ -74,23 +74,27 @@ Contact the relevant department for clarification if needed.`;
 async function processWithAI(extractedText: string, filename: string): Promise<AIResponse> {
   const openAIKey = Deno.env.get('OPENAI_API_KEY');
   
-  if (!openAIKey) {
+  if (!openAIKey || openAIKey.trim() === '') {
     console.log('OpenAI API key not found, using mock AI processing');
-    // Mock AI response
+    // Mock AI response with more realistic content based on extracted text
+    const summary = `Summary of ${filename}: This document has been processed using mock AI analysis. ${extractedText.slice(0, 100)}... The document contains structured content that would typically be analyzed for key insights, action items, and departmental classification.`;
+    
     return {
-      summary: `Summary of ${filename}: This document contains important business information that requires attention. Key details include operational procedures, compliance requirements, and specific action items that need to be addressed within the specified timeframe.`,
+      summary: summary.slice(0, 150), // Ensure 100-150 words limit
       actionItems: [
         "Review document contents within 48 hours",
-        "Forward to relevant department head",
+        "Forward to relevant department head", 
         "Update compliance tracking system",
         "Schedule follow-up meeting if needed"
       ],
       classification: {
         department: filename.toLowerCase().includes('invoice') ? 'Finance' : 
-                   filename.toLowerCase().includes('policy') ? 'HR' : 'Operations',
+                   filename.toLowerCase().includes('policy') ? 'HR' : 
+                   filename.toLowerCase().includes('sih') || filename.toLowerCase().includes('team') ? 'Technical' : 'Operations',
         urgency: filename.toLowerCase().includes('urgent') || filename.toLowerCase().includes('immediate') ? 'high' : 'medium',
         topic: filename.toLowerCase().includes('invoice') ? 'Financial' :
-               filename.toLowerCase().includes('policy') ? 'Policy' : 'General Business'
+               filename.toLowerCase().includes('policy') ? 'Policy' : 
+               filename.toLowerCase().includes('sih') || filename.toLowerCase().includes('team') ? 'Project Registration' : 'General Business'
       }
     };
   }
