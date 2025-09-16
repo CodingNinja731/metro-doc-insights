@@ -99,7 +99,9 @@ async function processWithAI(extractedText: string, filename: string): Promise<A
     };
   }
 
+  // Only call OpenAI if we have a valid API key
   try {
+    console.log('Using OpenAI API for document processing');
     const prompt = `Analyze this document and provide a structured response in JSON format:
 
 Document: ${extractedText}
